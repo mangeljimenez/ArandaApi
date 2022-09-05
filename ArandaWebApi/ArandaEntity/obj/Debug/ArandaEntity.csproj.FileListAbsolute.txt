@@ -1,0 +1,12 @@
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\bin\Debug\ArandaEntity.dll.config
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\bin\Debug\ArandaEntity.dll
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\bin\Debug\ArandaEntity.pdb
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\bin\Debug\EntityFramework.dll
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\bin\Debug\EntityFramework.SqlServer.dll
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\bin\Debug\EntityFramework.xml
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\bin\Debug\EntityFramework.SqlServer.xml
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\obj\Debug\ArandaEntity.csproj.AssemblyReference.cache
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\obj\Debug\ArandaEntity.csproj.CoreCompileInputs.cache
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\obj\Debug\ArandaEntity.csproj.CopyComplete
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\obj\Debug\ArandaEntity.dll
+D:\Proyectos\PruebaAranda\ArandaWebApi\ArandaEntity\obj\Debug\ArandaEntity.pdb

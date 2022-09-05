@@ -10,8 +10,8 @@ namespace ArandaEntity
 {
     public class DisconGenericRepository<TEntity> : IDisconGenericRepository<TEntity> where TEntity : class
     {
-        protected readonly Func<DbContext> _dbContextCreator;
-        public DisconGenericRepository(Func<DbContext> dbContextCreator)
+        protected readonly Func<ArandaDBModel> _dbContextCreator;
+        public DisconGenericRepository(Func<ArandaDBModel> dbContextCreator)
         {
             if (dbContextCreator == null)
                 throw new ArgumentNullException(nameof(dbContextCreator), $"The parameter dbContextCreator can not be null");
