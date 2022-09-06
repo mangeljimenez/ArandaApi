@@ -53,7 +53,6 @@
   <ItemGroup>
     <Compile Include="General\GenericResponses.cs" />
     <Compile Include="General\TokenLogic.cs" />
-    <Compile Include="ProductLogic\IProductsLogic.cs" />
     <Compile Include="ProductLogic\ProductCategoryLogic.cs" />
     <Compile Include="ProductLogic\ProductLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

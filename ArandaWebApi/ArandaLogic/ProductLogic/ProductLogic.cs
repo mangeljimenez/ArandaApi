@@ -108,8 +108,8 @@ namespace ArandaLogic.ProductLogic
 
                     var query = (from a in context.Products
                                  join b in context.Categories on a.idProductCategory equals b.idProductCategory
-                                 where productName.Contains(a.productName) || description.Contains(a.description)
-                                    || (a.idProductCategory == idProductCategory.Value || !idProductCategory.HasValue)
+                                 where (a.productName.Contains(productName) || string.IsNullOrEmpty(productName)) && (a.description.Contains(description) || string.IsNullOrEmpty(description))
+                                    && (a.idProductCategory == idProductCategory.Value || !idProductCategory.HasValue)
                                  select new
                                  {
                                      a.idProduct,

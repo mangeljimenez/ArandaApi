@@ -10,16 +10,16 @@ using System.Web.Http;
 namespace ArandaWebApi.Controllers
 {
     [Authorize]
-    public class ProductsController : ApiController
+    public class CategoryController : ApiController
     {
         // GET api/<controller>
         [HttpGet]
-        public IHttpActionResult Get(string productName,string descripction, int? category, bool sortAsc = true)
+        public IHttpActionResult Get(string categoryName, bool sortAsc = true)
         {
-            ProductLogic productLogic = new ProductLogic();
-            var message = new Message<List<Product>>();
+            ProductCategoryLogic categoryLogic = new ProductCategoryLogic();
+            var message = new Message<List<Category>>();
 
-            var response = productLogic.GetProductsByParams(productName, descripction, category, sortAsc);
+            var response = categoryLogic.GetProductCategoriesByParams(categoryName, sortAsc);
             if (!response.HasError)
             {
                 message.IsSuccess = true;
@@ -35,27 +35,20 @@ namespace ArandaWebApi.Controllers
             }
         }
 
-        //// GET api/<controller>/5
-        //[HttpGet]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
         // POST api/<controller>
         [HttpPost]
-        public IHttpActionResult Post([FromBody] ProductToSave product)
+        public IHttpActionResult Post([FromBody] CategoryToSave category)
         {
             var message = new Message<int>();
-            if (product != null) {
-
-                ProductLogic productLogic = new ProductLogic();
-                var response = productLogic.CreateProduct(product);
+            if (category != null)
+            {
+                ProductCategoryLogic categoryLogic = new ProductCategoryLogic();
+                var response = categoryLogic.CreateProductCategory(category);
 
                 if (!response.HasError)
                 {
                     message.IsSuccess = true;
-                    message.ReturnMessage = "Producto guardado de forma correcta";
+                    message.ReturnMessage = "Categoria guardada de forma correcta";
                     message.Data = response.Data;
                     return Ok(message);
                 }
@@ -65,25 +58,24 @@ namespace ArandaWebApi.Controllers
                     message.IsSuccess = false;
                     return Content(HttpStatusCode.BadRequest, message);
                 }
-
             }
             return Ok();
         }
 
         // PUT api/<controller>/5
         [HttpPut()]
-        public IHttpActionResult Put([FromBody] ProductToUpdate product)
+        public IHttpActionResult Put([FromBody] Category category)
         {
             var message = new Message<int>();
-            if (product != null)
+            if (category != null)
             {
-                ProductLogic productLogic = new ProductLogic();
-                var response = productLogic.UpdateProduct(product);
+                ProductCategoryLogic categoryLogic = new ProductCategoryLogic();
+                var response = categoryLogic.UpdateProductCategory(category);
 
                 if (!response.HasError)
                 {
                     message.IsSuccess = true;
-                    message.ReturnMessage = "Producto actualizado de forma correcta";
+                    message.ReturnMessage = "Categoria actualizada de forma correcta";
                     message.Data = response.Data;
                     return Ok(message);
                 }
@@ -99,18 +91,18 @@ namespace ArandaWebApi.Controllers
 
         // DELETE api/<controller>/5
         [HttpDelete()]
-        public IHttpActionResult Delete(int idProduct)
+        public IHttpActionResult Delete(int idProductCategory)
         {
             var message = new Message<int>();
-            if (idProduct > 0)
+            if (idProductCategory > 0)
             {
-                ProductLogic productLogic = new ProductLogic();
-                var response = productLogic.DeleteProduct(idProduct);
+                ProductCategoryLogic categoryLogic = new ProductCategoryLogic();
+                var response = categoryLogic.DeleteProductCategory(idProductCategory);
 
                 if (!response.HasError)
                 {
                     message.IsSuccess = true;
-                    message.ReturnMessage = "Producto eliminado de forma correcta";
+                    message.ReturnMessage = "Categoria eliminada de forma correcta";
                     message.Data = response.Data;
                     return Ok(message);
                 }
