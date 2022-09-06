@@ -1,4 +1,5 @@
 ﻿using ArandaLogic.ProductLogic;
+using ArandaWebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,22 @@ namespace ArandaWebApi.Controllers
         public IHttpActionResult Get(string productName,string descripction, int? category, bool sortAsc = true)
         {
             ProductLogic productLogic = new ProductLogic();
-            List<Product> lsProducts = new List<Product>();
+            var message = new Message<List<Product>>();
 
-            lsProducts = productLogic.GetProductsByParams(productName, descripction, category, sortAsc);
-
-            return Ok(lsProducts);
+            var response = productLogic.GetProductsByParams(productName, descripction, category, sortAsc);
+            if (!response.HasError)
+            {
+                message.IsSuccess = true;
+                message.ReturnMessage = "Datos consultados de forma correcta";
+                message.Data = response.Data;
+                return Ok(message);
+            }
+            else
+            {
+                message.ReturnMessage = response.Message;
+                message.IsSuccess = false;
+                return Content(HttpStatusCode.BadRequest, message);
+            }
         }
 
         //// GET api/<controller>/5
@@ -33,9 +45,26 @@ namespace ArandaWebApi.Controllers
         [HttpPost]
         public IHttpActionResult Post([FromBody] ProductToSave product)
         {
+            var message = new Message<int>();
             if (product != null) {
+
                 ProductLogic productLogic = new ProductLogic();
-                productLogic.CreateProduct(product);
+                var response = productLogic.CreateProduct(product);
+
+                if (!response.HasError)
+                {
+                    message.IsSuccess = true;
+                    message.ReturnMessage = "Producto guardado de forma correcta";
+                    message.Data = response.Data;
+                    return Ok(message);
+                }
+                else
+                {
+                    message.ReturnMessage = response.Message;
+                    message.IsSuccess = false;
+                    return Content(HttpStatusCode.BadRequest, message);
+                }
+
             }
             return Ok();
         }
@@ -44,10 +73,25 @@ namespace ArandaWebApi.Controllers
         [HttpPut()]
         public IHttpActionResult Put([FromBody] ProductToUpdate product)
         {
+            var message = new Message<int>();
             if (product != null)
             {
                 ProductLogic productLogic = new ProductLogic();
-                productLogic.UpdateProduct(product);
+                var response = productLogic.UpdateProduct(product);
+
+                if (!response.HasError)
+                {
+                    message.IsSuccess = true;
+                    message.ReturnMessage = "Producto actualizado de forma correcta";
+                    message.Data = response.Data;
+                    return Ok(message);
+                }
+                else
+                {
+                    message.ReturnMessage = response.Message;
+                    message.IsSuccess = false;
+                    return Content(HttpStatusCode.BadRequest, message);
+                }
             }
             return Ok();
         }
@@ -56,10 +100,25 @@ namespace ArandaWebApi.Controllers
         [HttpDelete()]
         public IHttpActionResult Delete(int idProduct)
         {
+            var message = new Message<int>();
             if (idProduct > 0)
             {
                 ProductLogic productLogic = new ProductLogic();
-                productLogic.DeleteProduct(idProduct);
+                var response = productLogic.DeleteProduct(idProduct);
+
+                if (!response.HasError)
+                {
+                    message.IsSuccess = true;
+                    message.ReturnMessage = "Producto eliminado de forma correcta";
+                    message.Data = response.Data;
+                    return Ok(message);
+                }
+                else
+                {
+                    message.ReturnMessage = response.Message;
+                    message.IsSuccess = false;
+                    return Content(HttpStatusCode.BadRequest, message);
+                }
             }
             return Ok();
         }

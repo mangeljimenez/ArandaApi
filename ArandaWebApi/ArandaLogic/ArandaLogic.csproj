@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="General\GenericResponses.cs" />
     <Compile Include="General\TokenLogic.cs" />
     <Compile Include="ProductLogic\IProductsLogic.cs" />
     <Compile Include="ProductLogic\ProductCategoryLogic.cs" />

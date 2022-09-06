@@ -1,4 +1,5 @@
 ﻿using ArandaEntity;
+using ArandaLogic.General;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,10 @@ namespace ArandaLogic.ProductLogic
 {
     public interface IProductsLogic
     {
-        bool CreateProduct(ProductToSave product);
-        bool UpdateProduct(ProductToUpdate product);
-        bool DeleteProduct(int idProduct);
-        List<Product> GetProductsByParams(string productName, string description, int? idProductCategory, bool sortAsc);
+        GenericResponses<int> CreateProduct(ProductToSave product);
+        GenericResponses<int> UpdateProduct(ProductToUpdate product);
+        GenericResponses<int> DeleteProduct(int idProduct);
+        GenericResponses<List<Product>> GetProductsByParams(string productName, string description, int? idProductCategory, bool sortAsc);
     }
 
     public class Product
@@ -49,12 +50,11 @@ namespace ArandaLogic.ProductLogic
     {
         IDisconGenericRepository<ArandaEntity.Product> _repository = new DisconGenericRepository<ArandaEntity.Product>(() => new ArandaDBModel());
 
-        public bool CreateProduct(ProductToSave product)
+        public GenericResponses<int> CreateProduct(ProductToSave product)
         {
-            bool isSaved = false;
+            GenericResponses<int> genericResponses = new GenericResponses<int>();
             try
             {
-                int idProduct = 0;
                 ArandaEntity.Product productToSave = new ArandaEntity.Product();
                 if (product != null)
                 {
@@ -63,86 +63,101 @@ namespace ArandaLogic.ProductLogic
                     productToSave.idProductCategory = product.idProductCategory;
                     productToSave.productImage = System.Convert.FromBase64String(product.productImage);
                     productToSave.isActive = true;
-                    idProduct = _repository.Add(productToSave);
-                    if(idProduct > 0)
-                        isSaved = true;
+                    genericResponses.Data = _repository.Add(productToSave);
                 }
             }
             catch(Exception ex)
             {
-
+                genericResponses.Message = "Ha ocurrido un error al momento de crear el producto " + ex.Message;
+                genericResponses.HasError = true;
             }
-            return isSaved;
+            return genericResponses;
         }
 
-        public bool DeleteProduct(int idProduct)
+        public GenericResponses<int> DeleteProduct(int idProduct)
         {
-            if(idProduct > 0)
+            GenericResponses<int> genericResponses = new GenericResponses<int>();
+            try
             {
-                ArandaEntity.Product productToUpdate = _repository.Find(idProduct);
-                if(productToUpdate != null)
+                if (idProduct > 0)
                 {
-                    _repository.Remove(productToUpdate);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public List<Product> GetProductsByParams(string productName, string description, int? idProductCategory, bool sortAsc)
-        {
-            List<Product> lsProducts = new List<Product>();
-
-            using (var context = new ArandaDBModel()) {
-
-                var query = (from a in context.Products
-                             join b in context.Categories on a.idProductCategory equals b.idProductCategory
-                             where productName.Contains(a.productName) || description.Contains(a.description)
-                                || (a.idProductCategory == idProductCategory.Value || !idProductCategory.HasValue)
-                             select new
-                             {
-                                 a.idProduct,
-                                 a.productName,
-                                 a.description,
-                                 a.idProductCategory,
-                                 a.productImage,
-                                 a.isActive,
-                                 b.categoryName
-                             }).ToList();
-
-                if (sortAsc)
-                    query = query.OrderBy(x => x.productName).ThenBy(x => x.idProductCategory).ToList();
-                else
-                    query = query.OrderByDescending(x => x.productName).ThenByDescending(x => x.idProductCategory).ToList();
-
-                if (query.Count > 0)
-                {
-                    foreach (var item in query)
+                    ArandaEntity.Product productToUpdate = _repository.Find(idProduct);
+                    if (productToUpdate != null)
                     {
-                        Product product = new Product();
-                        product.idProduct = item.idProduct;
-                        product.productName = item.productName;
-                        product.description = item.description;
-                        product.idProductCategory = item.idProductCategory;
-                        product.productImage = Convert.ToBase64String(item.productImage, 0, item.productImage.Length);
-                        product.isActive = item.isActive;
-                        product.categoryName = item.categoryName;
-                        lsProducts.Add(product);
+                        genericResponses.Data = _repository.Remove(productToUpdate);
                     }
                 }
-
             }
-
-            return lsProducts;
+            catch(Exception ex)
+            {
+                genericResponses.Message = "Ha ocurrido un error al momento de eliminar el producto " + ex.Message;
+                genericResponses.HasError = true;
+            }            
+            return genericResponses;
         }
 
-        public bool UpdateProduct(ProductToUpdate product)
+        public GenericResponses<List<Product>> GetProductsByParams(string productName, string description, int? idProductCategory, bool sortAsc)
         {
-            bool isUpdate= false;
+            GenericResponses<List<Product>> genericResponses = new GenericResponses<List<Product>>();
+
+            List<Product> lsProducts = new List<Product>();
+            try
+            {
+                using (var context = new ArandaDBModel())
+                {
+
+                    var query = (from a in context.Products
+                                 join b in context.Categories on a.idProductCategory equals b.idProductCategory
+                                 where productName.Contains(a.productName) || description.Contains(a.description)
+                                    || (a.idProductCategory == idProductCategory.Value || !idProductCategory.HasValue)
+                                 select new
+                                 {
+                                     a.idProduct,
+                                     a.productName,
+                                     a.description,
+                                     a.idProductCategory,
+                                     a.productImage,
+                                     a.isActive,
+                                     b.categoryName
+                                 }).ToList();
+
+                    if (sortAsc)
+                        query = query.OrderBy(x => x.productName).ThenBy(x => x.idProductCategory).ToList();
+                    else
+                        query = query.OrderByDescending(x => x.productName).ThenByDescending(x => x.idProductCategory).ToList();
+
+                    if (query.Count > 0)
+                    {
+                        foreach (var item in query)
+                        {
+                            Product product = new Product();
+                            product.idProduct = item.idProduct;
+                            product.productName = item.productName;
+                            product.description = item.description;
+                            product.idProductCategory = item.idProductCategory;
+                            product.productImage = Convert.ToBase64String(item.productImage, 0, item.productImage.Length);
+                            product.isActive = item.isActive;
+                            product.categoryName = item.categoryName;
+                            lsProducts.Add(product);
+                        }
+                        genericResponses.Data = lsProducts;
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                genericResponses.Message = "Ha ocurrido un error al momento de consultar los datos " + ex.Message;
+                genericResponses.HasError = true;
+            }
+            return genericResponses;
+        }
+
+        public GenericResponses<int> UpdateProduct(ProductToUpdate product)
+        {
+            GenericResponses<int> genericResponses = new GenericResponses<int>();
             try
             {
                 ArandaEntity.Product productToUpdate = _repository.Find(product.idProduct);
-                int idProduct = 0;
                 if (productToUpdate != null)
                 {
                     if (string.IsNullOrEmpty(product.productName))
@@ -157,17 +172,15 @@ namespace ArandaLogic.ProductLogic
                     if (string.IsNullOrEmpty(product.productImage))
                         productToUpdate.productImage = System.Convert.FromBase64String(product.productImage);
 
-                    idProduct = _repository.Update(productToUpdate);
-
-                    if (idProduct > 0)
-                        isUpdate = true;
+                    genericResponses.Data = _repository.Update(productToUpdate);
                 }
             }
             catch (Exception ex)
             {
-
+                genericResponses.Message = "Ha ocurrido un error al momento de actualizar los datos " + ex.Message;
+                genericResponses.HasError = true;
             }
-            return isUpdate;
+            return genericResponses;
         }
     }
 }
