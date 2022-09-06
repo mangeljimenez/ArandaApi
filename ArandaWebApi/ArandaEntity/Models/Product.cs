@@ -15,7 +15,7 @@ namespace ArandaEntity
         [StringLength(120)]
         public string productName { get; set; }
 
-        [StringLength(20)]
+        [StringLength(512)]
         public string description { get; set; }
 
         public int idProductCategory { get; set; }
